@@ -98,7 +98,14 @@ Ready to Fight Back....
 go
 go
 go`);
-  for (const hero of heroList) {
+
+  const [leader, ...restMembers] = heroList;
+  winCount = 1;
+  fightCount = 1;
+
+  console.log(`${leader.name} is the leader of the team`);
+
+  for (const hero of restMembers) {
     request(
       'https://asia-east2-skooldio-courses.cloudfunctions.net/es6/fight',
       (error, response, body) => {
