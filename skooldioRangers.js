@@ -1,5 +1,6 @@
 //SKOOLDIO RANGERS
 const request = require('request');
+const fetch = require('node-fetch');
 
 const initSize = 10;
 const teamSize = 15;
@@ -58,26 +59,18 @@ const initMembers = () => {
   }
 };
 
-const snap = (heroList, isRandomMode, callback) => {
-  request.post(
-    'https://asia-east2-skooldio-courses.cloudfunctions.net/es6/snap',
-    {
-      json: {
-        isRandom: isRandomMode,
-        heroList: heroList,
-      },
-    },
-    (error, response, body) => {
-      heroList = heroList.filter(hero => body.heroLeft.includes(i => i.name == hero.name));
-      console.log(`
-After The Snap, we have
-${heroList.map(hero => hero.name)} left.`);
-      callback(heroList, afterFightCallback);
-    }
-  );
+const snap = async (heroList, isRandomMode) => {
+  return fetch('https://asia-east2-skooldio-courses.cloudfunctions.net/es6/snap', {
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      isRandom: isRandomMode,
+      heroList: heroList,
+    }),
+  }).then(response => response.json());
 };
 
-const fightBack = (heroList, afterFightCallback) => {
+const fightBack = async (heroList, afterFightCallback) => {
   const recruitCount = teamSize - heroList.length;
   console.log(`
 To Fight Back we have to get ${recruitCount} more members
@@ -89,8 +82,6 @@ To Fight Back we have to get ${recruitCount} more members
     console.log(`OK, we have ${hero.name} AKA ${hero.displayName} now.`);
     heroList.push(hero);
   }
-  let winCount = 0;
-  let fightCount = 0;
   console.log(`
 Now we have ${heroList.length} members
 
@@ -100,28 +91,21 @@ go
 go`);
 
   const [leader, ...restMembers] = heroList;
-  winCount = 1;
-  fightCount = 1;
 
   console.log(`${leader.name} is the leader of the team`);
-
-  for (const hero of restMembers) {
-    request(
-      'https://asia-east2-skooldio-courses.cloudfunctions.net/es6/fight',
-      (error, response, body) => {
-        const result = JSON.parse(body);
-        const fightResult = result.isWinTheFight;
-        console.log(hero.useSkill());
-        console.log(`${hero.name} ${fightResult ? 'won' : 'lost'} the fight.`);
-        fightCount++;
-        if (fightResult) winCount++;
-        if (fightCount == teamSize) afterFightCallback(winCount);
-      }
-    );
-  }
+  return Promise.all(
+    restMembers.map(async hero => {
+      const { isWinTheFight } = await fetch(
+        'https://asia-east2-skooldio-courses.cloudfunctions.net/es6/fight'
+      ).then(response => response.json());
+      console.log(hero.useSkill());
+      console.log(`${hero.name} ${isWinTheFight ? 'won' : 'lost'} the fight.`);
+      return isWinTheFight;
+    })
+  );
 };
 
-const afterFightCallback = winCount => {
+const afterFight = winCount => {
   if (winCount > minimalToWin) {
     console.log(`
 Your team has won`);
@@ -137,4 +121,18 @@ Episode 0: Let's Fight Back, Skooldio Rangers!!!
 
 Before The Snap, we have
 ${heroList.map(hero => hero.name)}`);
-snap(heroList, true, fightBack);
+const beginFight = async () => {
+  const { heroLeft } = await snap(heroList, true);
+  const newHeroList = await heroList.filter(async hero =>
+    heroLeft.includes(i => i.name == hero.name)
+  );
+  console.log(`
+After The Snap, we have
+${newHeroList.map(hero => hero.name)} left.`);
+
+  const fightResult = await fightBack(newHeroList);
+  const countFightResult = fightResult.filter(isWon => isWon).length;
+  afterFight(countFightResult + 1);
+};
+
+beginFight();
