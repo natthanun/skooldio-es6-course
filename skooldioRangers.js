@@ -12,17 +12,22 @@ const lastNameList = ['Wick', 'Stark', 'Rogers', 'Lee'];
 const genderList = ['Man', 'Woman', 'Boy', 'Girl', 'Baby', 'King', 'Queen'];
 const animalTypeList = ['Cat', 'Ant', 'Spider', 'Elephant', 'Shark', 'Lion', 'Tiger'];
 
-const Hero = function(human, animal) {
-  this.displayName = human.displayName;
-  this.gender = human.gender;
-  this.animalName = animal.type;
-  this.name = this.animalName + this.gender;
-  this.skill = 'yah~!';
-};
+class Hero {
+  constructor(human, animal) {
+    const { displayName, gender } = human;
+    const { type } = animal;
 
-Hero.prototype.useSkill = function() {
-  return this.skill;
-};
+    this.displayName = displayName;
+    this.gender = gender;
+    this.animalName = type;
+    this.name = this.animalName + this.gender;
+    this.skill = 'yah~!';
+  }
+
+  useSkill() {
+    return this.skill;
+  }
+}
 
 const randomArray = array => {
   const randomIndex = Math.floor(Math.random() * array.length);
@@ -35,10 +40,10 @@ const getNewMember = () => {
   const gender = randomArray(genderList);
   const animalType = randomArray(animalTypeList);
   const human = {
-    firstName: firstName,
-    lastName: lastName,
+    firstName,
+    lastName,
     displayName: firstName + ' ' + lastName,
-    gender: gender,
+    gender,
   };
   const animal = {
     type: animalType,
