@@ -17,9 +17,10 @@ const Hero = function(human, animal) {
   this.gender = human.gender;
   this.animalName = animal.type;
   this.name = this.animalName + this.gender;
+  this.skill = 'yah~!';
 };
 
-Hero.prototype.useSkill = () => {
+Hero.prototype.useSkill = function() {
   return this.skill;
 };
 
@@ -62,7 +63,7 @@ const snap = (heroList, isRandomMode, callback) => {
       },
     },
     (error, response, body) => {
-      heroList = body.heroLeft;
+      heroList = heroList.filter(hero => body.heroLeft.includes(i => i.name == hero.name));
       console.log(`
 After The Snap, we have
 ${heroList.map(hero => hero.name)} left.`);
@@ -98,6 +99,7 @@ go`);
       (error, response, body) => {
         const result = JSON.parse(body);
         const fightResult = result.isWinTheFight;
+        console.log(hero.useSkill());
         console.log(`${hero.name} ${fightResult ? 'won' : 'lost'} the fight.`);
         fightCount++;
         if (fightResult) winCount++;
