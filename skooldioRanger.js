@@ -25,7 +25,7 @@ function Hero(human, animal) {
   this.realName = human.name;
   this.gender = human.gender;
   this.animalName = animal.type;
-  this.heroName = this.animalName + ' ' + this.gender;
+  this.heroName = this.animalName + this.gender;
 }
 
 Hero.prototype.useSkill = function() {
@@ -74,7 +74,7 @@ function fightBack(herolist, afterFightCallback) {
 
   for (var i = 0; i < recruitCount; i++) {
     var hero = getNewMember();
-    console.log('OK, We have ' + hero.name + ' ' + 'AKA' + ' ' + hero.realName + ' now.');
+    console.log('OK, We have ' + hero.heroName + ' ' + 'AKA' + ' ' + hero.realName + ' now.');
     herolist.push(hero);
   }
   var winCount = 0;
