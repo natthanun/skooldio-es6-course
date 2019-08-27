@@ -21,19 +21,42 @@ function snap(herolist, isRandomMode, callback) {
   );
 }
 
+function Hero(human, animal) {
+  this.realName = human.name;
+  this.gender = human.gender;
+  this.animalName = animal.type;
+  this.heroName = this.animalName + ' ' + this.gender;
+}
+
+Hero.prototype.useSkill = function() {
+  return this.skill;
+};
+
+function randomArray(array) {
+  var randomIndex = Math.floor(Math.random() * array.length);
+  return array[randomIndex];
+}
+
+var nameList = ['John', 'Nat', 'Tony'];
+var familyNameList = ['Doe', 'Stark'];
+var genderList = ['Man', 'Woman', 'Boy', 'Girl', 'Baby', 'King', 'Queen'];
+var animalTypeList = ['Cat', 'Ant', 'Spider', 'Elephant', 'Shark', 'Lion', 'Tiger'];
+
 function getNewMember(human, animal) {
-  //spread rest
-  return 'member';
-  // const {name: realname, job, gender } = human;
-  // const {skill, name: animalName} = animal
-  // const heroName = gender === "male" animalName+" Man":animalName + " Women"
-  // const hero = {
-  //     heroName,
-  //     skill,
-  //     realname,
-  //     job
-  // }
-  // herolist.push(hero)
+  var name = randomArray(nameList);
+  var familyName = randomArray(familyNameList);
+  var gender = randomArray(genderList);
+  var animalType = randomArray(animalTypeList);
+  var human = {
+    name: name,
+    familyName: familyName,
+    gender: gender,
+  };
+  var animal = {
+    type: animalType,
+  };
+  var newHero = new Hero(human, animal);
+  return newHero;
 }
 
 function afterFightCallback(winCount) {
@@ -51,8 +74,8 @@ function fightBack(herolist, afterFightCallback) {
 
   for (var i = 0; i < recruitCount; i++) {
     var hero = getNewMember();
-    console.log('OK, We have ' + hero + ' now.');
-    herolist.push(getNewMember());
+    console.log('OK, We have ' + hero.name + ' ' + 'AKA' + ' ' + hero.realName + ' now.');
+    herolist.push(hero);
   }
   var winCount = 0;
   var fightCount = 0;
@@ -67,7 +90,7 @@ function fightBack(herolist, afterFightCallback) {
     ) {
       var result = JSON.parse(body);
       var fightResult = result.isWinTheFight;
-      console.log(hero + ' ' + (fightResult ? 'win ' : 'lose ') + 'the fight.');
+      console.log(hero.heroName + ' ' + (fightResult ? 'win ' : 'lose ') + 'the fight.');
       fightCount++;
       if (fightResult) winCount++;
       if (fightCount == teamSize) afterFightCallback(winCount);
