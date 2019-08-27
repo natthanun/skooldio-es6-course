@@ -63,7 +63,8 @@ function snap(heroList, isRandomMode, callback) {
     },
     function(error, response, body) {
       heroList = body.heroLeft;
-      console.log('\nAfter The Snap, we have \n' + heroList.map(hero => hero.name) + ' left.\n');
+      console.log(`After The Snap, we have
+${heroList.map(hero => hero.name)} left.`);
       callback(heroList, afterFightCallback);
     }
   );
@@ -71,18 +72,22 @@ function snap(heroList, isRandomMode, callback) {
 
 function fightBack(heroList, afterFightCallback) {
   const recruitCount = teamSize - heroList.length;
-  console.log('\nTo Fight Back we have to get ' + recruitCount + ' more members');
-  console.log('\n...Start recruiting new members...');
+  console.log(`To Fight Back we have to get ${recruitCount} more members`);
+  console.log(`
+...Start recruiting new members...`);
 
   for (let i = 0; i < recruitCount; i++) {
     const hero = getNewMember();
-    console.log('OK, we have ' + hero.name + ' ' + 'AKA' + ' ' + hero.displayName + ' now.');
+    console.log(`OK, we have ${hero.name} AKA ${hero.displayName} now.`);
     heroList.push(hero);
   }
   let winCount = 0;
   let fightCount = 0;
-  console.log('\nNow we have ' + heroList.length + ' members');
-  console.log('\nReady to Fight Back....\ngo\ngo\ngo');
+  console.log(`Now we have ${heroList.length} members`);
+  console.log(`Ready to Fight Back....
+go
+go
+go`);
   for (let i = 0; i < heroList.length; i++) {
     const hero = heroList[i];
     request('https://asia-east2-skooldio-courses.cloudfunctions.net/es6/fight', function(
@@ -92,7 +97,7 @@ function fightBack(heroList, afterFightCallback) {
     ) {
       const result = JSON.parse(body);
       const fightResult = result.isWinTheFight;
-      console.log(hero.name + ' ' + (fightResult ? 'won ' : 'lost ') + 'the fight.');
+      console.log(`${hero.name} ${fightResult ? 'won' : 'lost'} the fight.`);
       fightCount++;
       if (fightResult) winCount++;
       if (fightCount == teamSize) afterFightCallback(winCount);
@@ -102,13 +107,18 @@ function fightBack(heroList, afterFightCallback) {
 
 function afterFightCallback(winCount) {
   if (winCount > minimalToWin) {
-    console.log('\nYour team has won');
+    console.log(`
+Your team has won`);
   } else {
-    console.log('\nYour team has lost');
+    console.log(`
+Your team has lost`);
   }
 }
 
 initMembers();
-console.log("\t'The Skooldio Rangers'\nEpisode 0: Let's Fight Back, Skooldio Rangers!!!");
-console.log('\nBefore The Snap, we have\n' + heroList.map(hero => hero.name));
+console.log(`   'The Skooldio Rangers'
+Episode 0: Let's Fight Back, Skooldio Rangers!!!`);
+console.log(`
+Before The Snap, we have
+${heroList.map(hero => hero.name)}`);
 snap(heroList, true, fightBack);
