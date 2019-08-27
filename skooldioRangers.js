@@ -12,23 +12,23 @@ const lastNameList = ['Wick', 'Stark', 'Rogers', 'Lee'];
 const genderList = ['Man', 'Woman', 'Boy', 'Girl', 'Baby', 'King', 'Queen'];
 const animalTypeList = ['Cat', 'Ant', 'Spider', 'Elephant', 'Shark', 'Lion', 'Tiger'];
 
-function Hero(human, animal) {
+const Hero = function(human, animal) {
   this.displayName = human.displayName;
   this.gender = human.gender;
   this.animalName = animal.type;
   this.name = this.animalName + this.gender;
-}
+};
 
-Hero.prototype.useSkill = function() {
+Hero.prototype.useSkill = () => {
   return this.skill;
 };
 
-function randomArray(array) {
+const randomArray = array => {
   const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
-}
+};
 
-function getNewMember() {
+const getNewMember = () => {
   const firstName = randomArray(firstNameList);
   const lastName = randomArray(lastNameList);
   const gender = randomArray(genderList);
@@ -44,15 +44,15 @@ function getNewMember() {
   };
   const newHero = new Hero(human, animal);
   return newHero;
-}
+};
 
-function initMembers() {
+const initMembers = () => {
   for (let i = 0; i < initSize; i++) {
     heroList.push(getNewMember());
   }
-}
+};
 
-function snap(heroList, isRandomMode, callback) {
+const snap = (heroList, isRandomMode, callback) => {
   request.post(
     'https://asia-east2-skooldio-courses.cloudfunctions.net/es6/snap',
     {
@@ -61,7 +61,7 @@ function snap(heroList, isRandomMode, callback) {
         heroList: heroList,
       },
     },
-    function(error, response, body) {
+    (error, response, body) => {
       heroList = body.heroLeft;
       console.log(`
 After The Snap, we have
@@ -69,9 +69,9 @@ ${heroList.map(hero => hero.name)} left.`);
       callback(heroList, afterFightCallback);
     }
   );
-}
+};
 
-function fightBack(heroList, afterFightCallback) {
+const fightBack = (heroList, afterFightCallback) => {
   const recruitCount = teamSize - heroList.length;
   console.log(`
 To Fight Back we have to get ${recruitCount} more members
@@ -92,24 +92,22 @@ Ready to Fight Back....
 go
 go
 go`);
-  for (let i = 0; i < heroList.length; i++) {
-    const hero = heroList[i];
-    request('https://asia-east2-skooldio-courses.cloudfunctions.net/es6/fight', function(
-      error,
-      response,
-      body
-    ) {
-      const result = JSON.parse(body);
-      const fightResult = result.isWinTheFight;
-      console.log(`${hero.name} ${fightResult ? 'won' : 'lost'} the fight.`);
-      fightCount++;
-      if (fightResult) winCount++;
-      if (fightCount == teamSize) afterFightCallback(winCount);
-    });
+  for (const hero of heroList) {
+    request(
+      'https://asia-east2-skooldio-courses.cloudfunctions.net/es6/fight',
+      (error, response, body) => {
+        const result = JSON.parse(body);
+        const fightResult = result.isWinTheFight;
+        console.log(`${hero.name} ${fightResult ? 'won' : 'lost'} the fight.`);
+        fightCount++;
+        if (fightResult) winCount++;
+        if (fightCount == teamSize) afterFightCallback(winCount);
+      }
+    );
   }
-}
+};
 
-function afterFightCallback(winCount) {
+const afterFightCallback = winCount => {
   if (winCount > minimalToWin) {
     console.log(`
 Your team has won`);
@@ -117,7 +115,7 @@ Your team has won`);
     console.log(`
 Your team has lost`);
   }
-}
+};
 
 initMembers();
 console.log(`   'The Skooldio Rangers'
