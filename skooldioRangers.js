@@ -1,16 +1,16 @@
 //SKOOLDIO RANGERS
-var request = require('request');
+const request = require('request');
 
-var initSize = 10;
-var teamSize = 15;
-var minimalToWin = teamSize / 2;
+const initSize = 10;
+const teamSize = 15;
+const minimalToWin = teamSize / 2;
 
-var heroList = [];
+const heroList = [];
 
-var firstNameList = ['John', 'Nate', 'Tony', 'Sarah', 'Christina', 'Jane'];
-var lastNameList = ['Wick', 'Stark', 'Rogers', 'Lee'];
-var genderList = ['Man', 'Woman', 'Boy', 'Girl', 'Baby', 'King', 'Queen'];
-var animalTypeList = ['Cat', 'Ant', 'Spider', 'Elephant', 'Shark', 'Lion', 'Tiger'];
+const firstNameList = ['John', 'Nate', 'Tony', 'Sarah', 'Christina', 'Jane'];
+const lastNameList = ['Wick', 'Stark', 'Rogers', 'Lee'];
+const genderList = ['Man', 'Woman', 'Boy', 'Girl', 'Baby', 'King', 'Queen'];
+const animalTypeList = ['Cat', 'Ant', 'Spider', 'Elephant', 'Shark', 'Lion', 'Tiger'];
 
 function Hero(human, animal) {
   this.displayName = human.displayName;
@@ -24,30 +24,30 @@ Hero.prototype.useSkill = function() {
 };
 
 function randomArray(array) {
-  var randomIndex = Math.floor(Math.random() * array.length);
+  const randomIndex = Math.floor(Math.random() * array.length);
   return array[randomIndex];
 }
 
 function getNewMember() {
-  var firstName = randomArray(firstNameList);
-  var lastName = randomArray(lastNameList);
-  var gender = randomArray(genderList);
-  var animalType = randomArray(animalTypeList);
-  var human = {
+  const firstName = randomArray(firstNameList);
+  const lastName = randomArray(lastNameList);
+  const gender = randomArray(genderList);
+  const animalType = randomArray(animalTypeList);
+  const human = {
     firstName: firstName,
     lastName: lastName,
     displayName: firstName + ' ' + lastName,
     gender: gender,
   };
-  var animal = {
+  const animal = {
     type: animalType,
   };
-  var newHero = new Hero(human, animal);
+  const newHero = new Hero(human, animal);
   return newHero;
 }
 
 function initMembers() {
-  for (var i = 0; i < initSize; i++) {
+  for (let i = 0; i < initSize; i++) {
     heroList.push(getNewMember());
   }
 }
@@ -70,28 +70,28 @@ function snap(heroList, isRandomMode, callback) {
 }
 
 function fightBack(heroList, afterFightCallback) {
-  var recruitCount = teamSize - heroList.length;
+  const recruitCount = teamSize - heroList.length;
   console.log('\nTo Fight Back we have to get ' + recruitCount + ' more members');
   console.log('\n...Start recruiting new members...');
 
-  for (var i = 0; i < recruitCount; i++) {
-    var hero = getNewMember();
+  for (let i = 0; i < recruitCount; i++) {
+    const hero = getNewMember();
     console.log('OK, we have ' + hero.name + ' ' + 'AKA' + ' ' + hero.displayName + ' now.');
     heroList.push(hero);
   }
-  var winCount = 0;
-  var fightCount = 0;
+  let winCount = 0;
+  let fightCount = 0;
   console.log('\nNow we have ' + heroList.length + ' members');
   console.log('\nReady to Fight Back....\ngo\ngo\ngo');
-  for (var i = 0; i < heroList.length; i++) {
-    var hero = heroList[i];
+  for (let i = 0; i < heroList.length; i++) {
+    const hero = heroList[i];
     request('https://asia-east2-skooldio-courses.cloudfunctions.net/es6/fight', function(
       error,
       response,
       body
     ) {
-      var result = JSON.parse(body);
-      var fightResult = result.isWinTheFight;
+      const result = JSON.parse(body);
+      const fightResult = result.isWinTheFight;
       console.log(hero.name + ' ' + (fightResult ? 'won ' : 'lost ') + 'the fight.');
       fightCount++;
       if (fightResult) winCount++;
