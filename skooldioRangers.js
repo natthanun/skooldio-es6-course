@@ -63,7 +63,8 @@ function snap(heroList, isRandomMode, callback) {
     },
     function(error, response, body) {
       heroList = body.heroLeft;
-      console.log(`After The Snap, we have
+      console.log(`
+After The Snap, we have
 ${heroList.map(hero => hero.name)} left.`);
       callback(heroList, afterFightCallback);
     }
@@ -72,8 +73,9 @@ ${heroList.map(hero => hero.name)} left.`);
 
 function fightBack(heroList, afterFightCallback) {
   const recruitCount = teamSize - heroList.length;
-  console.log(`To Fight Back we have to get ${recruitCount} more members`);
   console.log(`
+To Fight Back we have to get ${recruitCount} more members
+
 ...Start recruiting new members...`);
 
   for (let i = 0; i < recruitCount; i++) {
@@ -83,8 +85,10 @@ function fightBack(heroList, afterFightCallback) {
   }
   let winCount = 0;
   let fightCount = 0;
-  console.log(`Now we have ${heroList.length} members`);
-  console.log(`Ready to Fight Back....
+  console.log(`
+Now we have ${heroList.length} members
+
+Ready to Fight Back....
 go
 go
 go`);
@@ -117,8 +121,8 @@ Your team has lost`);
 
 initMembers();
 console.log(`   'The Skooldio Rangers'
-Episode 0: Let's Fight Back, Skooldio Rangers!!!`);
-console.log(`
+Episode 0: Let's Fight Back, Skooldio Rangers!!!
+
 Before The Snap, we have
 ${heroList.map(hero => hero.name)}`);
 snap(heroList, true, fightBack);
